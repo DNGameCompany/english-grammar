@@ -358,6 +358,23 @@ nav {
 .wod-def { font-size:14px; color:rgba(255,255,255,0.8); margin-bottom:12px; }
 .wod-ex { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--gold); }
 
+/* FLIP CARD */
+.flip-card { perspective:1000px; cursor:pointer; border-radius:8px; margin-bottom:28px; }
+.flip-card-inner { position:relative; width:100%; transition:transform 0.6s cubic-bezier(0.4,0.2,0.2,1); transform-style:preserve-3d; display:grid; }
+.flip-card.flipped .flip-card-inner { transform:rotateY(180deg); }
+.flip-card-front, .flip-card-back { backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:8px; grid-area:1/1; }
+.flip-card-front { position:relative; z-index:1; }
+.flip-card-back { transform:rotateY(180deg); background:linear-gradient(135deg,var(--accent3),#2d4a7a); border-radius:8px; padding:28px; color:white; box-sizing:border-box; }
+.flip-hint { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; opacity:0.5; margin-bottom:16px; }
+.flip-uk-word { font-family:'DM Serif Display',serif; font-size:32px; margin-bottom:8px; }
+.flip-uk-pos { font-size:12px; opacity:0.7; margin-bottom:14px; font-style:italic; }
+.flip-uk-def { font-size:14px; line-height:1.6; opacity:0.9; margin-bottom:14px; }
+.flip-uk-ex { font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(255,255,255,0.7); font-style:italic; }
+.speak-btn { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; background:transparent; border:1.5px solid rgba(255,255,255,0.35); border-radius:20px; color:rgba(255,255,255,0.85); font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; margin-bottom:16px; }
+.speak-btn:hover { background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.7); }
+.speak-btn-dark { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; background:transparent; border:1.5px solid var(--border); border-radius:20px; color:var(--ink2); font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; margin-bottom:16px; }
+.speak-btn-dark:hover { border-color:var(--accent3); color:var(--accent3); }
+
 /* RESPONSIVE */
 @media(max-width:600px){
   .hero { padding:50px 20px 40px; }
@@ -1639,23 +1656,205 @@ function sendQuick(text) {
 }
 
 // ===================== DICTIONARY =====================
-const wordOfDay = [
-  {word:'persevere',ph:'/ˌpɜːsɪˈvɪər/',pos:'verb',def:'To continue doing something despite difficulty or delay in achieving success.',ex:'If you persevere with your studies, you will improve quickly.'},
-  {word:'accomplish',ph:'/əˈkʌmplɪʃ/',pos:'verb',def:'To succeed in doing or completing something.',ex:'She accomplished her goal of learning English in one year.'},
-  {word:'curious',ph:'/ˈkjʊəriəs/',pos:'adjective',def:'Eager to know or learn something.',ex:'Children are naturally curious about the world around them.'},
-  {word:'gradually',ph:'/ˈɡrædjuəli/',pos:'adverb',def:'Slowly, by degrees; not suddenly.',ex:'Your English will improve gradually if you practise every day.'},
-  {word:'fluent',ph:'/ˈfluːənt/',pos:'adjective',def:'Able to speak a language very well and naturally.',ex:'After two years of study, she became fluent in English.'},
+// 90 A2-B1 words — cycles through one per day, repeats every 3 months
+const wodWords = [
+  // A2 рівень — базова лексика
+  'abandon','ability','absence','absorb','accomplish','accurate','achieve','acquire','adjust','admire',
+  'advance','advantage','affect','afford','aggressive','ambition','analyse','ancient','anxiety','apparent',
+  'apply','appreciate','approach','approve','argue','arrange','assess','assist','atmosphere','attach',
+  'attempt','attend','attitude','attract','aware','barrier','benefit','beyond','capable','career',
+  'challenge','circumstance','colleague','combine','communicate','compare','compete','complain','complex','concern',
+  'confident','confirm','confuse','consider','contain','contribute','convince','cooperate','curious','current',
+  'debate','decline','dedicate','define','deliberate','demand','demonstrate','depend','describe','deserve',
+  'determine','develop','devote','differ','discover','discuss','distinct','diverse','effective','efficient',
+  'encourage','enormous','establish','evaluate','evident','examine','expand','expect','experience','explain',
+  // B1 рівень — середній рівень
+  'explore','express','extend','extreme','familiar','flexible','focus','formal','foundation','frequent',
+  'frustrate','fundamental','generate','genuine','global','gradual','guarantee','hesitate','highlight','identify',
+  'ignore','immediate','impact','imply','improve','influence','inform','initiative','inspire','interpret',
+  'investigate','involve','issue','justify','maintain','manage','mention','method','modify','motivate',
+  'negotiate','obtain','obvious','overcome','particular','persuade','predict','prevent','prioritize','process',
+  'propose','provide','publish','pursue','realize','recognize','recommend','reduce','reflect','relate',
+  'require','research','resolve','respond','restrict','reveal','review','revise','significant','simplify',
+  'solve','specify','strategy','strengthen','structure','suggest','support','survive','sustain','tend',
+  // B1-B2 рівень — просунута лексика
+  'transform','transition','translate','transparent','treat','trigger','typical','undergo','unique','update',
+  'utilize','valid','variety','verify','vital','volunteer','vulnerable','witness','accomplish','acknowledge',
+  'adapt','adequate','allocate','alter','anticipate','appreciate','aspire','assume','attribute','authorize',
+  'balance','clarify','classify','collaborate','commit','compensate','complement','comprehend','concentrate','conclude',
+  'consist','construct','contrast','controversy','coordinate','criticize','cultivate','demonstrate','derive','designate',
+  'determine','distinguish','distribute','eliminate','emphasize','enable','encounter','enforce','enhance','ensure',
+  'estimate','exclude','execute','exhibit','facilitate','formulate','fulfill','implement','incorporate','indicate',
+  'integrate','isolate','justify','monitor','navigate','negotiate','observe','obtain','optimize','participate',
+  'perceive','perform','persist','portray','preserve','promote','propose','qualify','question','regulate',
+  'reinforce','reject','rely','represent','resist','retain','reveal','satisfy','select','simulate',
+  'speculate','stimulate','submit','substitute','summarize','supplement','tolerate','transfer','undertake','withdraw',
+  // Додаткові корисні слова
+  'abstract','accompany','accumulate','achieve','acknowledge','acquire','activate','adequate','adjust','admire',
+  'adopt','advocate','aftermath','aggregate','align','allocate','ambiguous','ambitious','amplify','annoy',
+  'anticipate','appeal','apply','appreciate','appropriate','approximately','arise','assert','associate','assure',
+  'attach','attain','brief','capable','capture','categorize','cautious','celebrate','challenge','characteristic',
+  'clarify','classify','coincide','collapse','compelling','competent','compile','complement','complex','comply',
+  'comprise','conceal','conflict','confine','confront','confuse','connect','conscious','consequence','consistent',
+  'constant','contrast','convenient','convince','coordinate','correct','creative','critical','crucial','dedicate',
+  'defend','define','deliberate','describe','detect','differ','diligent','discipline','disrupt','distinct',
+  'dominate','dynamic','eager','elaborate','embrace','emerge','emphasis','employ','engage','enormous',
+  'ensure','entire','essentially','evolve','exceptional','exclude','execute','expand','explicit','express'
 ];
-function initDict() {
-  const wod = wordOfDay[new Date().getDate() % wordOfDay.length];
-  document.getElementById('wod-block').innerHTML = `
-    <div class="wod-label">СЛОВО ДНЯ</div>
-    <div class="wod-word">${wod.word}</div>
-    <div class="wod-phonetic">${wod.ph}</div>
-    <div class="wod-def"><em>${wod.pos}</em> — ${wod.def}</div>
-    <div class="wod-ex">"${wod.ex}"</div>
-  `;
+
+function getTodaysWord() {
+  const start = new Date('2024-01-01');
+  const today = new Date();
+  const days = Math.floor((today - start) / 86400000);
+  return wodWords[days % wodWords.length];
 }
+
+function playWodAudio() {
+  const audio = document.getElementById('wod-audio');
+  if(audio && audio.src && audio.src !== window.location.href) {
+    audio.play();
+  } else {
+    const w = document.querySelector('.wod-word');
+    if(w) speakWord(w.textContent.trim());
+  }
+}
+
+function speakWord(word) {
+  const utt = new SpeechSynthesisUtterance(word);
+  utt.lang = 'en-US';
+  utt.rate = 0.85;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utt);
+}
+
+function toggleFlip(id) {
+  document.getElementById(id).classList.toggle('flipped');
+}
+
+// Translations — Gemini if key available, MyMemory as free fallback
+const ukTranslations = {};
+
+async function translateViaMyMemory(text) {
+  // Free public translation API — no key needed, 1000 words/day
+  try {
+    const encoded = encodeURIComponent(text.slice(0, 400));
+    const r = await fetch(`https://api.mymemory.translated.net/get?q=${encoded}&langpair=en|uk`);
+    const data = await r.json();
+    if(data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
+      return data.responseData.translatedText;
+    }
+  } catch(e) {}
+  return null;
+}
+
+async function translateToUk(text, word) {
+  if(ukTranslations[word]) return ukTranslations[word];
+
+  let result = null;
+
+  // Try Gemini first if key is available
+  if(apiKey) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+        { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ contents:[{role:'user',parts:[{text:`Translate this English dictionary definition to Ukrainian in 1-2 sentences. Return ONLY the Ukrainian translation, nothing else:\n"${text}"`}]}] }) }
+      );
+      const data = await res.json();
+      if(data.candidates && data.candidates[0]) {
+        result = data.candidates[0].content.parts[0].text.trim();
+      }
+    } catch(e) {}
+  }
+
+  // Fallback to MyMemory if Gemini failed or no key
+  if(!result) {
+    result = await translateViaMyMemory(text);
+  }
+
+  if(result) ukTranslations[word] = result;
+  return result;
+}
+
+async function initDict() {
+  const word = getTodaysWord();
+  const wodEl = document.getElementById('wod-block');
+  window._wodWord = word;
+  window._wodDef = word;
+
+  // Render flip card immediately — always clickable
+  wodEl.innerHTML = `
+    <div class="flip-card" id="wod-flip" onclick="wodFlipClick()">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div style="background:linear-gradient(135deg,var(--ink),#2d2520);border-radius:8px;padding:28px;color:white;">
+            <div class="wod-label">СЛОВО ДНЯ · натисни щоб перекласти</div>
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <div class="wod-word">${word}</div>
+              <button class="speak-btn" onclick="event.stopPropagation();playWodAudio()">&#128266; Слухати</button>
+              <audio id="wod-audio"></audio>
+            </div>
+            <div class="wod-phonetic" id="wod-ph">Завантажую...</div>
+            <div class="wod-def" id="wod-def-text"></div>
+            <div class="wod-ex" id="wod-ex-text"></div>
+          </div>
+        </div>
+        <div class="flip-card-back">
+          <div class="flip-hint">&#8592; натисни щоб повернутись</div>
+          <button class="speak-btn" onclick="event.stopPropagation();speakWord('${word}')">&#128266; ${word}</button>
+          <div class="flip-uk-word">${word}</div>
+          <div class="flip-uk-pos" id="wod-uk-pos"></div>
+          <div class="flip-uk-def" id="wod-uk-def">&#9203; Перекладаю...</div>
+        </div>
+      </div>
+    </div>`;
+
+  // Load definition in background
+  try {
+    const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + word);
+    const data = await r.json();
+    if(!Array.isArray(data)) throw new Error('not found');
+    const entry = data[0];
+    const ph = entry.phonetic || (entry.phonetics && entry.phonetics[0] && entry.phonetics[0].text) || '';
+    const audioUrl = entry.phonetics && entry.phonetics.find(p=>p.audio) ? entry.phonetics.find(p=>p.audio).audio : null;
+    const meaning = entry.meanings[0];
+    const pos = meaning.partOfSpeech;
+    const def = meaning.definitions[0].definition;
+    const ex = meaning.definitions[0].example || '';
+
+    const phEl = document.getElementById('wod-ph');
+    const defEl = document.getElementById('wod-def-text');
+    const exEl = document.getElementById('wod-ex-text');
+    const posEl = document.getElementById('wod-uk-pos');
+    if(phEl) phEl.textContent = ph;
+    if(defEl) defEl.innerHTML = '<em>' + pos + '</em> — ' + def;
+    if(exEl && ex) exEl.textContent = '"' + ex + '"';
+    if(posEl) posEl.textContent = pos + (ph ? ' — ' + ph : '');
+    if(audioUrl) { const a = document.getElementById('wod-audio'); if(a) a.src = audioUrl; }
+    window._wodDef = def + (ex ? ' ' + ex : '');
+    window._wodWord = word;
+  } catch(e) {
+    const phEl = document.getElementById('wod-ph');
+    if(phEl) phEl.textContent = 'Визначення недоступне — перевір інтернет';
+  }
+}
+
+let wodTranslated = false;
+function wodFlipClick() {
+  toggleFlip('wod-flip');
+  if(!wodTranslated) {
+    wodTranslated = true;
+    loadWodTranslation();
+  }
+}
+
+async function loadWodTranslation() {
+  const defEl = document.getElementById('wod-uk-def');
+  const ukDef = await translateToUk(window._wodDef || window._wodWord, window._wodWord);
+  if(defEl) defEl.textContent = ukDef || 'Не вдалося перекласти. Перевір інтернет.';
+}
+
+
 async function lookupWord() {
   const word = document.getElementById('dict-input').value.trim().toLowerCase();
   if(!word) return;
@@ -1668,16 +1867,67 @@ async function lookupWord() {
     if(!Array.isArray(data)) { res.innerHTML='<p style="color:var(--accent)">Слово не знайдено.</p>'; return; }
     const entry = data[0];
     const phonetic = entry.phonetic || (entry.phonetics&&entry.phonetics[0]&&entry.phonetics[0].text) || '';
-    let html = `<div class="dict-word">${entry.word}</div><div class="dict-phonetic">${phonetic}</div>`;
+    // Find audio URL
+    const audioUrl = entry.phonetics && entry.phonetics.find(p=>p.audio) ? entry.phonetics.find(p=>p.audio).audio : null;
+
+    // Build English definitions
+    let defsHtml = '';
     entry.meanings.slice(0,3).forEach(m=>{
-      html += `<div class="dict-meaning"><div class="dict-pos">${m.partOfSpeech}</div>`;
+      defsHtml += `<div class="dict-meaning"><div class="dict-pos">${m.partOfSpeech}</div>`;
       m.definitions.slice(0,2).forEach(d=>{
-        html += `<div class="dict-def">• ${d.definition}</div>`;
-        if(d.example) html += `<div class="dict-ex">"${d.example}"</div>`;
+        defsHtml += `<div class="dict-def">• ${d.definition}</div>`;
+        if(d.example) defsHtml += `<div class="dict-ex">"${d.example}"</div>`;
       });
-      html += '</div>';
+      defsHtml += '</div>';
     });
-    res.innerHTML = html;
+
+    // Get all definitions text for translation
+    const allDefs = entry.meanings.slice(0,2).map(m =>
+      m.definitions.slice(0,1).map(d => d.definition).join(' ')
+    ).join(' | ');
+
+    res.innerHTML = `
+      <div class="flip-card" id="result-flip" onclick="toggleFlip('result-flip')" style="margin-bottom:0">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div style="padding:0">
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
+                <div class="dict-word" style="margin-bottom:0">${entry.word}</div>
+                ${audioUrl
+                  ? `<button class="speak-btn-dark" onclick="event.stopPropagation();document.getElementById('aud-${word}').play()">🔊 Слухати</button><audio id="aud-${word}" src="${audioUrl}"></audio>`
+                  : `<button class="speak-btn-dark" onclick="event.stopPropagation();speakWord('${entry.word}')">🔊 Слухати</button>`
+                }
+                <span style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;">натисни для перекладу →</span>
+              </div>
+              <div class="dict-phonetic">${phonetic}</div>
+              ${defsHtml}
+            </div>
+          </div>
+          <div class="flip-card-back" id="result-back">
+            <div class="flip-hint">← назад до англійського</div>
+            <button class="speak-btn" onclick="event.stopPropagation();speakWord('${entry.word}')">🔊 ${entry.word}</button>
+            <div class="flip-uk-word">${entry.word}</div>
+            <div class="flip-uk-pos">${phonetic}</div>
+            <div class="flip-uk-def" id="uk-def-text">⏳ Перекладаю...</div>
+          </div>
+        </div>
+      </div>`;
+
+    // Set height
+    // Translate on first flip
+    const flipCard = document.getElementById('result-flip');
+    let translated = false;
+    flipCard.addEventListener('click', async () => {
+      if(!translated) {
+        translated = true;
+        const ukText = await translateToUk(allDefs, word);
+        const defEl = document.getElementById('uk-def-text');
+        if(defEl) defEl.textContent = ukText || 'Не вдалося перекласти. Перевір інтернет-зʼєднання.';
+        // Recalculate height after translation
+
+      }
+    });
+
   } catch(e) { res.innerHTML='<p style="color:var(--accent)">Помилка пошуку. Перевір з\'єднання.</p>'; }
 }
 
