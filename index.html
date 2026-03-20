@@ -1777,12 +1777,17 @@ async function initDict() {
             <div class="wod-ex" id="wod-ex-text"></div>
           </div>
         </div>
-        <div class="flip-card-back">
-          <div class="flip-hint">&#8592; натисни щоб повернутись</div>
-          <button class="speak-btn" onclick="event.stopPropagation();speakWord('${word}')">&#128266; ${word}</button>
-          <div class="flip-uk-word">${word}</div>
-          <div class="flip-uk-pos" id="wod-uk-pos"></div>
-          <div class="flip-uk-def" id="wod-uk-def">&#9203; Перекладаю...</div>
+        <div class="flip-card-back" style="background:linear-gradient(135deg,var(--ink),#2d2520);padding:0;">
+          <div style="background:linear-gradient(135deg,var(--ink),#2d2520);border-radius:8px;padding:28px;color:white;height:100%;">
+            <div class="wod-label">СЛОВО ДНЯ · переклад</div>
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <div class="wod-word">${word}</div>
+              <button class="speak-btn" onclick="event.stopPropagation();speakWord('${word}')">&#128266; Слухати</button>
+            </div>
+            <div class="wod-phonetic" id="wod-uk-pos"></div>
+            <div class="wod-def" id="wod-uk-def" style="color:rgba(255,255,255,0.85)">&#9203; Перекладаю...</div>
+            <div class="wod-ex" id="wod-uk-ex"></div>
+          </div>
         </div>
       </div>
     </div>`;
@@ -1881,12 +1886,22 @@ async function lookupWord() {
               ${defsHtml}
             </div>
           </div>
-          <div class="flip-card-back" id="result-back">
-            <div class="flip-hint">← назад до англійського</div>
-            <button class="speak-btn" onclick="event.stopPropagation();speakWord('${entry.word}')">🔊 ${entry.word}</button>
-            <div class="flip-uk-word">${entry.word}</div>
-            <div class="flip-uk-pos">${phonetic}</div>
-            <div class="flip-uk-def" id="uk-def-text">⏳ Перекладаю...</div>
+          <div class="flip-card-back" style="background:var(--card);padding:0;">
+            <div style="padding:28px;">
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
+                <div class="dict-word" style="margin-bottom:0">${entry.word}</div>
+                ${audioUrl
+                  ? `<button class="speak-btn-dark" onclick="event.stopPropagation();document.getElementById('aud-${word}').play()">🔊 Слухати</button>`
+                  : `<button class="speak-btn-dark" onclick="event.stopPropagation();speakWord('${entry.word}')">🔊 Слухати</button>`
+                }
+                <span style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;">← назад</span>
+              </div>
+              <div class="dict-phonetic">${phonetic}</div>
+              <div class="dict-meaning">
+                <div class="dict-pos">Переклад</div>
+                <div class="dict-def" id="uk-def-text" style="color:var(--ink2)">⏳ Перекладаю...</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>`;
