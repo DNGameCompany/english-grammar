@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Grammar A1–A2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #e8c84a;
+    --accent2: #4ae8a0;
+    --accent3: #e84a7a;
+    --text: #e8e8e0;
+    --muted: #888;
+    --a1: #4ae8a0;
+    --a2: #4ab0e8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    padding: 60px 40px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: 'A1–A2';
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 180px;
+    font-weight: 900;
+    color: rgba(232,200,74,0.04);
+    pointer-events: none;
+    line-height: 1;
+  }
+  .header-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--accent); }
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 500px;
+  }
+  .stats-row {
+    display: flex;
+    gap: 32px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* PROGRESS */
+  .progress-section {
+    padding: 32px 40px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .progress-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .progress-pct { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--accent); }
+  .progress-bar-bg {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.6s ease;
+    width: 0%;
+  }
+
+  /* FILTERS */
+  .filters {
+    padding: 24px 40px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-btn {
+    padding: 7px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 500; }
+
+  /* GRID */
+  .topics-grid {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* CARD */
+  .topic-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--border);
+    transition: background 0.2s;
+  }
+  .topic-card:hover { border-color: #333; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .topic-card:hover::before { background: var(--accent); }
+  .topic-card.done { opacity: 0.6; }
+  .topic-card.done::before { background: var(--accent2); }
+  .topic-card.hidden { display: none; }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .level-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 3px 8px;
+    border-radius: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .badge-a1 { background: rgba(74,232,160,0.12); color: var(--a1); border: 1px solid rgba(74,232,160,0.25); }
+  .badge-a2 { background: rgba(74,176,232,0.12); color: var(--a2); border: 1px solid rgba(74,176,232,0.25); }
+  .badge-a1a2 { background: rgba(232,200,74,0.10); color: var(--accent); border: 1px solid rgba(232,200,74,0.2); }
+
+  .week-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .card-title-uk {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+  .card-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 3px;
+    margin-bottom: 14px;
+  }
+  .example {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .example span { color: var(--muted); }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .time-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .done-btn {
+    padding: 5px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .done-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .topic-card.done .done-btn { background: rgba(74,232,160,0.1); border-color: var(--accent2); color: var(--accent2); }
+
+  /* WEEK HEADERS */
+  .week-section { padding: 0 40px; }
+  .week-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 32px 0 0;
+    margin-bottom: 0;
+  }
+  .week-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .week-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .week-desc {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 36px;
+    position: relative;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    font-size: 20px; line-height: 1;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 6px; }
+  .modal-level { margin-bottom: 20px; }
+  .modal-section { margin-bottom: 20px; }
+  .modal-section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .modal-section p { font-size: 13px; color: #aaa; line-height: 1.6; }
+  .rule-list { list-style: none; }
+  .rule-list li {
+    font-size: 13px;
+    color: #aaa;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 10px;
+  }
+  .rule-list li::before { content: '→'; color: var(--accent); font-family: monospace; flex-shrink: 0; }
+  .ex-list { list-style: none; }
+  .ex-list li {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    padding: 4px 0;
+  }
+  .ex-list li span { color: #777; font-size: 11px; }
+  .tip-box {
+    background: rgba(232,200,74,0.06);
+    border: 1px solid rgba(232,200,74,0.2);
+    border-radius: 3px;
+    padding: 14px;
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.6;
+  }
+  .tip-box strong { color: var(--accent); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header, .progress-section, .filters, .topics-grid, .week-section { padding-left: 20px; padding-right: 20px; }
+    .topics-grid { grid-template-columns: 1fr; padding: 20px; }
+  }
+
+  /* ANIMATIONS */
+  .topic-card { animation: fadeIn 0.3s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="header-label">Навчальна програма · English Grammar</div>
+    <h1>Граматика<br><span>A1 — A2</span></h1>
+    <p class="header-sub">Повний курс базової граматики. 8 тижнів, 32 теми. Від нуля до впевненого базового рівня.</p>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num">8</div><div class="stat-label">Тижнів</div></div>
+      <div class="stat"><div class="stat-num">32</div><div class="stat-label">Теми</div></div>
+      <div class="stat"><div class="stat-num" id="done-count">0</div><div class="stat-label">Вивчено</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="progress-section">
+  <div class="container">
+    <div class="progress-header">
+      <div class="progress-title">Загальний прогрес</div>
+      <div class="progress-pct" id="progress-pct">0%</div>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+  </div>
+</div>
+
+<div class="filters">
+  <div class="container" style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button class="filter-btn active" data-filter="all">Всі теми</button>
+    <button class="filter-btn" data-filter="a1">A1</button>
+    <button class="filter-btn" data-filter="a2">A2</button>
+    <button class="filter-btn" data-filter="done">Вивчені ✓</button>
+    <button class="filter-btn" data-filter="todo">Не вивчені</button>
+  </div>
+</div>
+
+<div id="main-content"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-body">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+const topics = [
+  // WEEK 1
+  {w:1, n:1, level:'A1', en:'The Verb "To Be"', uk:'Дієслово "бути"', time:'45 хв',
+   desc:'Основа всієї англійської. Форми am / is / are у стверджувальних, заперечних і питальних реченнях.',
+   rules:['I am, You are, He/She/It is, We/They are','Заперечення: I am not = I\'m not','Питання: Are you...? Is he...?','Скорочення: I\'m, you\'re, he\'s, she\'s'],
+   examples:['I am a student. → Я студент.','She is happy. → Вона щаслива.','Are you tired? → Ти втомлений?','He is not here. → Його тут немає.'],
+   tip:'<strong>Головне правило:</strong> Дієслово to be НЕ опускають в англійській, як в українській. "Я студент" = I <em>am</em> a student.'},
+  {w:1, n:2, level:'A1', en:'Pronouns & Articles', uk:'Займенники та артиклі', time:'40 хв',
+   desc:'Особові займенники та артиклі a / an / the — основа кожного речення.',
+   rules:['I, you, he, she, it, we, they','A — перед приголосним звуком (a cat)','An — перед голосним звуком (an apple)','The — конкретний предмет, вже відомий'],
+   examples:['I have a dog. → У мене є собака.','She eats an orange. → Вона їсть апельсин.','The book is on the table. → Книга на столі.'],
+   tip:'<strong>Запам\'ятай:</strong> a/an = будь-який один предмет. the = ось цей конкретний.'},
+  {w:1, n:3, level:'A1', en:'Present Simple', uk:'Теперішній простий час', time:'60 хв',
+   desc:'Найважливіший час! Для звичок, фактів, розкладів. Основа розмовної англійської.',
+   rules:['I/You/We/They: play, eat, work','He/She/It: plays, eats, works (+s/es)','Заперечення: do not / does not + дієслово','Питання: Do you...? / Does he...?'],
+   examples:['I drink coffee every morning.','She works at a hospital.','Do you speak English?','He doesn\'t like vegetables.'],
+   tip:'<strong>Увага:</strong> з he/she/it — додаємо -s! Але в запереченні і питанні -s не ставимо: Does she play? (не plays)'},
+  {w:1, n:4, level:'A1', en:'Nouns: Singular & Plural', uk:'Іменники: однина та множина', time:'35 хв',
+   desc:'Як утворювати множину іменників — правила та виключення.',
+   rules:['Більшість: +s (cat → cats)','Після s/sh/ch/x: +es (box → boxes)','Слова на -y → -ies (city → cities)','Неправильні: man→men, child→children, foot→feet'],
+   examples:['one book → two books','a bus → five buses','a country → many countries','one tooth → many teeth'],
+   tip:'<strong>Порада:</strong> Виучи 10 неправильних множин окремо — вони зустрічаються найчастіше.'},
+
+  // WEEK 2
+  {w:2, n:5, level:'A1', en:'Possessives', uk:'Присвійний відмінок', time:'40 хв',
+   desc:'Чий предмет? Присвійні займенники та апостроф-s.',
+   rules:['my, your, his, her, its, our, their','Іменник + \'s: Mary\'s book','mine, yours, his, hers, ours, theirs','Питання: Whose is this?'],
+   examples:['This is my bag.','It\'s Tom\'s car.','Whose jacket is this? — It\'s hers.','Our house is big.'],
+   tip:'<strong>Різниця:</strong> my (мій + іменник) vs mine (мій — без іменника). This is <em>my</em> pen. This pen is <em>mine</em>.'},
+  {w:2, n:6, level:'A1', en:'There is / There are', uk:'Є / існує', time:'35 хв',
+   desc:'Як сказати, що щось існує або знаходиться десь.',
+   rules:['There is + однина (There is a cat)','There are + множина (There are cats)','Заперечення: There isn\'t / There aren\'t','Питання: Is there...? / Are there...?'],
+   examples:['There is a problem. → Є проблема.','There are five students.','Is there a bank near here?','There aren\'t any seats.'],
+   tip:'<strong>Не плутай:</strong> There (існування) ≠ Their (їхній) ≠ They\'re (вони є).'},
+  {w:2, n:7, level:'A1', en:'Adjectives', uk:'Прикметники', time:'40 хв',
+   desc:'Описові слова. Порядок прикметників у реченні.',
+   rules:['Прикметник стоїть ПЕРЕД іменником: a big house','Або після to be: The house is big','Прикметники не змінюються (не big→bigs!)','Порядок: розмір → вік → колір → матеріал'],
+   examples:['She has beautiful eyes.','The weather is terrible today.','I live in a small old red brick house.','He is very tall.'],
+   tip:'<strong>Порядок прикметників:</strong> Opinion → Size → Age → Shape → Color → Origin → Material. Рідко потрібно більше 2-3.'},
+  {w:2, n:8, level:'A1', en:'Can / Can\'t', uk:'Можу / не можу', time:'35 хв',
+   desc:'Можливість та вміння. Найпростіший модальний дієслово.',
+   rules:['can + дієслово (без to): I can swim','Заперечення: cannot / can\'t','Питання: Can you...?','Однакова форма для всіх осіб!'],
+   examples:['I can speak three languages.','She can\'t drive yet.','Can you help me?','He can run very fast.'],
+   tip:'<strong>Запам\'ятай:</strong> Після can ЗАВЖДИ інфінітив без to: I can <em>swim</em> (не to swim, не swims).'},
+
+  // WEEK 3
+  {w:3, n:9, level:'A1', en:'Present Continuous', uk:'Теперішній тривалий час', time:'50 хв',
+   desc:'Що відбувається ЗАРАЗ, у цей момент. Am/is/are + -ing.',
+   rules:['to be + дієслово + -ing','I am reading, she is sleeping','Заперечення: I\'m not working','Питання: Are you listening?'],
+   examples:['I am writing an email now.','They are watching TV.','Is she coming to the party?','We\'re not going anywhere.'],
+   tip:'<strong>Різниця з Present Simple:</strong> I <em>drink</em> coffee (щодня) vs I <em>am drinking</em> coffee (зараз).'},
+  {w:3, n:10, level:'A1', en:'Prepositions of Place', uk:'Прийменники місця', time:'40 хв',
+   desc:'Де знаходиться предмет? In, on, at, under, next to та інші.',
+   rules:['in — всередині (in the box)','on — на поверхні (on the table)','at — у конкретній точці (at school)','under, behind, in front of, next to, between'],
+   examples:['The keys are in my pocket.','The cat is on the sofa.','She\'s at work right now.','The bank is next to the post office.'],
+   tip:'<strong>Правило at/in:</strong> at — точка (at home, at school). in — простір (in the city, in the room).'},
+  {w:3, n:11, level:'A1', en:'Prepositions of Time', uk:'Прийменники часу', time:'35 хв',
+   desc:'Коли? at, on, in для часу, днів та місяців.',
+   rules:['at + час: at 7 o\'clock, at night','on + день/дата: on Monday, on July 4th','in + місяць/рік/пора: in March, in 2020, in summer','Винятки: at the weekend, at Christmas'],
+   examples:['The meeting is at 3 pm.','I was born on March 15th.','She was born in 1995.','We go skiing in winter.'],
+   tip:'<strong>Легко запам\'ятати:</strong> at (точний час) → on (день) → in (довгий період). Від меншого до більшого.'},
+  {w:3, n:12, level:'A1', en:'Imperatives', uk:'Наказовий спосіб', time:'25 хв',
+   desc:'Команди, інструкції, поради.',
+   rules:['Стверджувальний: дієслово без займенника (Open the door!)','Заперечний: Don\'t + дієслово (Don\'t worry!)','Ввічлива форма: Please sit down.','Let\'s = пропозиція (Let\'s go!)'],
+   examples:['Turn left at the lights.','Don\'t touch that!','Please be quiet.','Let\'s have lunch together.'],
+   tip:'<strong>Тон важливий!</strong> Команда може звучати грубо. Додай "please" або "could you" для ввічливості.'},
+
+  // WEEK 4
+  {w:4, n:13, level:'A1', en:'Past Simple — "To Be"', uk:'Минулий час дієслова "бути"', time:'40 хв',
+   desc:'Was і were — минулий час дієслова to be.',
+   rules:['I/He/She/It → was','You/We/They → were','Заперечення: wasn\'t / weren\'t','Питання: Was he...? / Were they...?'],
+   examples:['I was at home yesterday.','They were very happy.','Was she at the party?','It wasn\'t cold last night.'],
+   tip:'<strong>Просто:</strong> was = am/is у минулому. were = are у минулому. Тільки дві форми!'},
+  {w:4, n:14, level:'A1', en:'Past Simple — Regular', uk:'Минулий простий (правильні дієслова)', time:'55 хв',
+   desc:'Що сталося в минулому. Правильні дієслова з -ed.',
+   rules:['Дієслово + -ed: worked, played, watched','Заперечення: did not (didn\'t) + дієслово','Питання: Did you...? Did she...?','Питальне слово: What did you do?'],
+   examples:['She worked all day yesterday.','We didn\'t watch the film.','Did you call your mother?','What happened?'],
+   tip:'<strong>Важливо:</strong> У запереченні і питанні — did, а дієслово в базовій формі: Did you <em>work</em>? (не worked)'},
+  {w:4, n:15, level:'A2', en:'Past Simple — Irregular', uk:'Минулий простий (неправильні дієслова)', time:'60 хв',
+   desc:'Найчастіші неправильні дієслова. Треба вчити напам\'ять.',
+   rules:['go→went, have→had, do→did','see→saw, come→came, get→got','say→said, know→knew, think→thought','У запереченні і питанні: didn\'t + основна форма'],
+   examples:['I went to Paris last year.','She had a great time.','We didn\'t go to school.','Did you see that movie?'],
+   tip:'<strong>Стратегія:</strong> Вивчай по 5-7 дієслів на день. Топ-50 неправильних дієслів покриють 90% розмов.'},
+  {w:4, n:16, level:'A2', en:'Future: "Going to"', uk:'Майбутній час: going to', time:'45 хв',
+   desc:'Плани та наміри. Що ти збираєшся зробити.',
+   rules:['am/is/are + going to + дієслово','I\'m going to study tonight.','Заперечення: I\'m not going to...','Питання: Are you going to...?'],
+   examples:['I\'m going to visit my parents.','She\'s going to start a new job.','Are you going to come?','He isn\'t going to like this.'],
+   tip:'<strong>Going to vs Will:</strong> going to = конкретний план. will = рішення в момент розмови або передбачення.'},
+
+  // WEEK 5
+  {w:5, n:17, level:'A2', en:'Future: "Will"', uk:'Майбутній час: will', time:'45 хв',
+   desc:'Спонтанні рішення, обіцянки, передбачення.',
+   rules:['will + дієслово (для всіх осіб)','I\'ll, you\'ll, he\'ll (скорочення)','Заперечення: won\'t (= will not)','Питання: Will you...?'],
+   examples:['I\'ll call you later. (обіцянка)','It will rain tomorrow. (передбачення)','Will you help me?','I won\'t forget.'],
+   tip:'<strong>Типові ситуації will:</strong> пропозиція допомоги (I\'ll carry that), обіцянка (I\'ll be there), передбачення з probably.'},
+  {w:5, n:18, level:'A2', en:'Countable & Uncountable', uk:'Злічувані та незлічувані іменники', time:'40 хв',
+   desc:'Some, any, much, many, a lot of — кількісні слова.',
+   rules:['Злічувані: a cat, two cats, many cats','Незлічувані: water, money, advice (без a/two)','Some (твердж.) / any (заперечення, питання)','much + незлічуване; many + злічуване'],
+   examples:['I have some money.','Is there any milk?','How much sugar? / How many apples?','A lot of people came.'],
+   tip:'<strong>Незлічувані:</strong> news, information, advice, furniture, luggage, bread, rice — завжди однина!'},
+  {w:5, n:19, level:'A2', en:'Comparatives', uk:'Вищий ступінь порівняння', time:'45 хв',
+   desc:'Порівнювати людей та речі. -er та more.',
+   rules:['Короткі прикметники + -er: bigger, faster','Довгі: more + прикметник: more beautiful','Неправильні: good→better, bad→worse','Структура: A is ... -er than B'],
+   examples:['She is taller than her brother.','This film is more interesting than that one.','Today is worse than yesterday.','He runs faster than me.'],
+   tip:'<strong>Правило 1/2 складів:</strong> 1 склад → -er (old→older). 2+ склади → more (careful→more careful). Винятки: clever, quiet.'},
+  {w:5, n:20, level:'A2', en:'Superlatives', uk:'Найвищий ступінь порівняння', time:'40 хв',
+   desc:'Найкращий, найбільший, найшвидший. The + -est / most.',
+   rules:['the + короткий + -est: the biggest','the most + довгий: the most expensive','Неправильні: good→the best, bad→the worst','Структура: ... the ... in/of ...'],
+   examples:['She is the smartest in the class.','It\'s the most beautiful city I\'ve seen.','He\'s the best player on the team.','That\'s the worst film ever!'],
+   tip:'<strong>Запам\'ятай:</strong> Superlative завжди з the. The biggest, the most popular — ЗАВЖДИ з артиклем the.'},
+
+  // WEEK 6
+  {w:6, n:21, level:'A2', en:'Present Perfect', uk:'Теперішній перфектний час', time:'65 хв',
+   desc:'Have/has + past participle. Досвід, результати, нещодавні події.',
+   rules:['have/has + past participle (3-я форма)','I have seen, she has gone','Заперечення: haven\'t / hasn\'t','ever, never, already, yet, just — ключові слова'],
+   examples:['I\'ve visited France twice.','Have you ever eaten sushi?','She hasn\'t finished yet.','He\'s just arrived.'],
+   tip:'<strong>Vs Past Simple:</strong> Present Perfect = без точного часу або зв\'язок із зараз. Past Simple = конкретний час у минулому (yesterday, last year).'},
+  {w:6, n:22, level:'A2', en:'Modal Verbs: should / must', uk:'Модальні дієслова: should / must', time:'45 хв',
+   desc:'Поради та обов\'язки.',
+   rules:['should = порада (You should sleep more)','must = обов\'язок/необхідність (You must pay)','mustn\'t = заборона (You mustn\'t smoke here)','don\'t have to = не обов\'язково'],
+   examples:['You should see a doctor.','You must wear a seatbelt.','She mustn\'t be late.','You don\'t have to come.'],
+   tip:'<strong>Різниця:</strong> must (внутрішня необхідність: I must go) vs have to (зовнішня: I have to go — бо так треба за правилами).'},
+  {w:6, n:23, level:'A2', en:'Questions & Question Words', uk:'Питання та питальні слова', time:'50 хв',
+   desc:'Всі типи питань. Порядок слів у питанні.',
+   rules:['Yes/No: Do/Does/Did/Is/Are/Was/Were + ...?','Wh- питання: What, Where, When, Why, Who, How','Порядок: Wh- + допоміжне + підмет + дієслово','How long, How often, How much, How many'],
+   examples:['What time does she start?','Where did you go last night?','How long have you been here?','Why are you laughing?'],
+   tip:'<strong>Subject questions:</strong> Who broke the window? (без допоміжного, бо who = підмет). Who did you call? (you = підмет, тому did є).'},
+  {w:6, n:24, level:'A2', en:'Adverbs of Frequency', uk:'Прислівники частотності', time:'35 хв',
+   desc:'Always, usually, often, sometimes, rarely, never — де їх ставити?',
+   rules:['Перед головним дієсловом: I always drink tea.','Після to be: She is always late.','Питання: How often do you...?','Occasionally, hardly ever — також частото вживані'],
+   examples:['He never eats meat.','We are usually tired on Mondays.','I sometimes go jogging.','How often do you travel?'],
+   tip:'<strong>Порядок за частотою:</strong> always(100%) → usually(80%) → often(60%) → sometimes(40%) → rarely(20%) → never(0%).'},
+
+  // WEEK 7
+  {w:7, n:25, level:'A2', en:'Conjunctions', uk:'Сполучники', time:'40 хв',
+   desc:'З\'єднувати речення та ідеї. And, but, or, because, so, when.',
+   rules:['and (і), but (але), or (або)','because (тому що) — причина','so (тому) — результат','when (коли), if (якщо), although (хоча)'],
+   examples:['I was tired but I couldn\'t sleep.','She left early because she was ill.','It was raining, so we stayed home.','Call me when you arrive.'],
+   tip:'<strong>Because vs So:</strong> I stayed home <em>because</em> it rained. (причина після because). It rained, <em>so</em> I stayed home. (результат після so).'},
+  {w:7, n:26, level:'A2', en:'Reported Speech (basic)', uk:'Непряма мова (базово)', time:'50 хв',
+   desc:'Переказувати, що сказала інша людина.',
+   rules:['say that: She said (that) she was tired.','tell + особа: He told me he was late.','Зсув часу: am→was, is→was, will→would','Зміна займенників: I→he/she'],
+   examples:['He said he loved pizza.','She told me she was leaving.','They said they would come.','He said he didn\'t know.'],
+   tip:'<strong>Say vs Tell:</strong> say + (that) — без об\'єкта. tell + особа: She <em>said</em> she was tired. She <em>told me</em> she was tired.'},
+  {w:7, n:27, level:'A2', en:'Passive Voice (basic)', uk:'Пасивний стан (базово)', time:'50 хв',
+   desc:'Коли нас цікавить дія, а не виконавець.',
+   rules:['to be + past participle','Present: The car is made in Germany.','Past: The window was broken.','by + виконавець (якщо важливо)'],
+   examples:['English is spoken all over the world.','The book was written in 1985.','This bridge was built by Romans.','The match was cancelled.'],
+   tip:'<strong>Коли пасив?</strong> Коли не знаємо хто зробив, або не важливо хто: The phone was stolen. My wallet has been found.'},
+  {w:7, n:28, level:'A2', en:'Infinitive & Gerund', uk:'Інфінітив та герундій', time:'55 хв',
+   desc:'To do vs doing — після яких дієслів що вживати?',
+   rules:['Інфінітив (to + V): want, need, decide, hope','Герундій (V-ing): enjoy, finish, like, mind','Обидва: like, love, hate, start','Після прийменника — завжди -ing'],
+   examples:['I want to leave early.','She enjoys cooking Italian food.','He started to cry / crying.','I\'m good at swimming.'],
+   tip:'<strong>Швидке правило:</strong> enjoy, avoid, finish, mind, keep — завжди + ing. want, need, decide, hope, plan — завжди + to.'},
+
+  // WEEK 8
+  {w:8, n:29, level:'A2', en:'Relative Clauses', uk:'Відносні підрядні речення', time:'50 хв',
+   desc:'Додавати опис через who, which, that, where.',
+   rules:['who — для людей (the man who called)','which — для речей (the book which I read)','that — для людей та речей','where — для місць (the city where I was born)'],
+   examples:['The woman who lives next door is a doctor.','That\'s the film that I told you about.','Is this the restaurant where you proposed?','I like music that makes me feel happy.'],
+   tip:'<strong>Defining vs Non-defining:</strong> The man <em>who called</em> was rude. (визначає, хто саме) vs My brother, <em>who lives in London</em>, is visiting. (додаткова інфо, коми).'},
+  {w:8, n:30, level:'A2', en:'Conditionals: 0 & 1st', uk:'Умовні речення: 0 та 1-й тип', time:'55 хв',
+   desc:'Якщо..., то... Умови та їх наслідки.',
+   rules:['Zero: if + Present, Present (завжди правда)','First: if + Present, will + V (реальна умова)','Структура: if-clause + main clause','Порядок частин можна міняти'],
+   examples:['If you heat ice, it melts. (zero)','If it rains, I\'ll stay home. (1st)','If she studies hard, she will pass.','I\'ll call you if I\'m late.'],
+   tip:'<strong>Zero Conditional:</strong> загальна правда, наукові факти. First Conditional: реальна, можлива ситуація в майбутньому.'},
+  {w:8, n:31, level:'A2', en:'Used to', uk:'Колись / звичка в минулому', time:'35 хв',
+   desc:'Звички та стани, які більше не існують.',
+   rules:['used to + дієслово: I used to smoke.','Заперечення: didn\'t use to (usedn\'t to)','Питання: Did you use to...?','НЕ існує "I use to" у теперішньому'],
+   examples:['I used to play football as a kid.','She used to live in Paris.','Did you use to have long hair?','We didn\'t use to have a car.'],
+   tip:'<strong>Не плутай:</strong> used to do (звичка в минулому) ≠ be used to doing (звик, звично) ≠ get used to doing (звикати).'},
+  {w:8, n:32, level:'A2', en:'Review & Revision', uk:'Повторення та закріплення', time:'90 хв',
+   desc:'Фінальний тиждень: повторення всього матеріалу, практика міксованих тестів.',
+   rules:['Повтори всі 31 тему','Роби mixed practice — речення з різними часами','Читай прості тексти (A2 level)','Дивися субтитровані відео на рівні A1-A2'],
+   examples:['She has been working here since 2020.','If I had more time, I would travel more.','The meeting was cancelled because of rain.','I used to be shy, but now I\'m not.'],
+   tip:'<strong>Далі — B1!</strong> Після опанування A1-A2 граматики ти готовий до B1: Past Perfect, Second Conditional, Phrasal Verbs, Modal Perfect.'},
+];
+
+const weekTitles = {
+  1: 'Фундамент мови',
+  2: 'Базові конструкції',
+  3: 'Час та місце',
+  4: 'Минуле та майбутнє',
+  5: 'Порівняння та кількість',
+  6: 'Досвід та обов\'язки',
+  7: 'Складні речення',
+  8: 'Завершення курсу'
+};
+
+let done = JSON.parse(localStorage.getItem('eng-done') || '[]');
+
+function saveDone() {
+  try { localStorage.setItem('eng-done', JSON.stringify(done)); } catch(e){}
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = Math.round((done.length / topics.length) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('done-count').textContent = done.length;
+}
+
+function renderAll() {
+  const container = document.getElementById('main-content');
+  const weeks = [...new Set(topics.map(t => t.w))];
+
+  let html = '';
+  weeks.forEach(w => {
+    html += `<div class="week-section">
+      <div class="week-header">
+        <div class="week-label">Тиждень ${w}</div>
+        <div class="week-line"></div>
+        <div class="week-desc">${weekTitles[w]}</div>
+      </div>
+    </div>
+    <div class="topics-grid week-grid-${w}">`;
+
+    topics.filter(t => t.w === w).forEach(t => {
+      const isDone = done.includes(t.n);
+      const badgeClass = t.level === 'A1' ? 'badge-a1' : t.level === 'A2' ? 'badge-a2' : 'badge-a1a2';
+      html += `<div class="topic-card${isDone ? ' done' : ''}" data-n="${t.n}" data-level="${t.level.toLowerCase()}">
+        <div class="card-top">
+          <span class="level-badge ${badgeClass}">${t.level}</span>
+          <span class="week-tag">W${t.w} · T${t.n}</span>
+        </div>
+        <div class="card-title">${t.en}</div>
+        <div class="card-title-uk">${t.uk}</div>
+        <div class="card-desc">${t.desc}</div>
+        <div class="card-examples">
+          ${t.examples.slice(0,2).map(e => `<div class="example">${e}</div>`).join('')}
+        </div>
+        <div class="card-footer">
+          <span class="time-tag">⏱ ${t.time}</span>
+          <button class="done-btn" data-n="${t.n}">${isDone ? '✓ Вивчено' : 'Відмітити'}</button>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+
+  document.querySelectorAll('.done-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const n = parseInt(btn.dataset.n);
+      if (done.includes(n)) {
+        done = done.filter(d => d !== n);
+        btn.textContent = 'Відмітити';
+        btn.closest('.topic-card').classList.remove('done');
+      } else {
+        done.push(n);
+        btn.textContent = '✓ Вивчено';
+        btn.closest('.topic-card').classList.add('done');
+      }
+      saveDone();
+    });
+  });
+
+  document.querySelectorAll('.topic-card').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.classList.contains('done-btn')) return;
+      const n = parseInt(card.dataset.n);
+      openModal(n);
+    });
+  });
+
+  updateProgress();
+}
+
+function openModal(n) {
+  const t = topics.find(x => x.n === n);
+  if (!t) return;
+  const badgeClass = t.level === 'A1' ? 'badge-a1' : 'badge-a2';
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-level"><span class="level-badge ${badgeClass}">${t.level}</span></div>
+    <h2>${t.en}</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">${t.uk} · ⏱ ${t.time}</p>
+    <div class="modal-section">
+      <div class="modal-section-title">Про що ця тема</div>
+      <p>${t.desc}</p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Основні правила</div>
+      <ul class="rule-list">${t.rules.map(r => `<li>${r}</li>`).join('')}</ul>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Приклади</div>
+      <ul class="ex-list">${t.examples.map(e => `<li>${e}</li>`).join('')}</ul>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Порада</div>
+      <div class="tip-box">${t.tip}</div>
+    </div>
+  `;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal-overlay').classList.remove('open');
+});
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.topic-card').forEach(card => {
+      const level = card.dataset.level;
+      const isDone = card.classList.contains('done');
+      let show = true;
+      if (filter === 'a1') show = level === 'a1';
+      else if (filter === 'a2') show = level === 'a2';
+      else if (filter === 'done') show = isDone;
+      else if (filter === 'todo') show = !isDone;
+      card.classList.toggle('hidden', !show);
+    });
+  });
+});
+
+renderAll();
+</script>
+</body>
+</html>
