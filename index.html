@@ -1780,12 +1780,8 @@ async function initDict() {
         <div class="flip-card-back" style="background:linear-gradient(135deg,var(--ink),#2d2520);padding:0;">
           <div style="background:linear-gradient(135deg,var(--ink),#2d2520);border-radius:8px;padding:28px;color:white;height:100%;">
             <div class="wod-label">СЛОВО ДНЯ · переклад</div>
-            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-              <div class="wod-word">${word}</div>
-              <button class="speak-btn" onclick="event.stopPropagation();speakWord('${word}')">&#128266; Слухати</button>
-            </div>
-            <div class="wod-phonetic" id="wod-uk-pos"></div>
-            <div class="wod-def" id="wod-uk-def" style="color:rgba(255,255,255,0.85)">&#9203; Перекладаю...</div>
+            <div class="wod-word" id="wod-uk-word">&#9203;</div>
+            <div class="wod-def" id="wod-uk-def" style="margin-top:12px">&#9203; Перекладаю...</div>
             <div class="wod-ex" id="wod-uk-ex"></div>
           </div>
         </div>
@@ -1808,14 +1804,15 @@ async function initDict() {
     const phEl = document.getElementById('wod-ph');
     const defEl = document.getElementById('wod-def-text');
     const exEl = document.getElementById('wod-ex-text');
-    const posEl = document.getElementById('wod-uk-pos');
     if(phEl) phEl.textContent = ph;
     if(defEl) defEl.innerHTML = '<em>' + pos + '</em> — ' + def;
     if(exEl && ex) exEl.textContent = '"' + ex + '"';
-    if(posEl) posEl.textContent = pos + (ph ? ' — ' + ph : '');
     if(audioUrl) { const a = document.getElementById('wod-audio'); if(a) a.src = audioUrl; }
     window._wodDef = def + (ex ? ' ' + ex : '');
+    window._wodDefOnly = def;
+    window._wodExOnly = ex;
     window._wodWord = word;
+    window._wodPos = pos;
   } catch(e) {
     const phEl = document.getElementById('wod-ph');
     if(phEl) phEl.textContent = 'Визначення недоступне — перевір інтернет';
@@ -1832,9 +1829,25 @@ function wodFlipClick() {
 }
 
 async function loadWodTranslation() {
-  const defEl = document.getElementById('wod-uk-def');
-  const ukDef = await translateToUk(window._wodDef || window._wodWord, window._wodWord);
-  if(defEl) defEl.textContent = ukDef || 'Не вдалося перекласти. Перевір інтернет.';
+  const wordEl = document.getElementById('wod-uk-word');
+  const defEl  = document.getElementById('wod-uk-def');
+  const exEl   = document.getElementById('wod-uk-ex');
+
+  const word   = window._wodWord || '';
+  const pos    = window._wodPos  || '';
+  const defText = window._wodDefOnly || word;
+  const exText  = window._wodExOnly  || '';
+
+  // Translate word, definition and example in parallel
+  const [ukWord, ukDef, ukEx] = await Promise.all([
+    translateToUk(word, word + '_word'),
+    translateToUk(defText, word + '_def'),
+    exText ? translateToUk(exText, word + '_ex') : Promise.resolve('')
+  ]);
+
+  if(wordEl) wordEl.textContent = ukWord || word;
+  if(defEl)  defEl.innerHTML = (pos ? '<em>' + pos + '</em> — ' : '') + (ukDef || 'Не вдалося перекласти.');
+  if(exEl && ukEx) exEl.textContent = '"' + ukEx + '"';
 }
 
 
@@ -1888,18 +1901,13 @@ async function lookupWord() {
           </div>
           <div class="flip-card-back" style="background:var(--card);padding:0;">
             <div style="padding:28px;">
-              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
-                <div class="dict-word" style="margin-bottom:0">${entry.word}</div>
-                ${audioUrl
-                  ? `<button class="speak-btn-dark" onclick="event.stopPropagation();document.getElementById('aud-${word}').play()">🔊 Слухати</button>`
-                  : `<button class="speak-btn-dark" onclick="event.stopPropagation();speakWord('${entry.word}')">🔊 Слухати</button>`
-                }
-                <span style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;">← назад</span>
-              </div>
-              <div class="dict-phonetic">${phonetic}</div>
-              <div class="dict-meaning">
-                <div class="dict-pos">Переклад</div>
-                <div class="dict-def" id="uk-def-text" style="color:var(--ink2)">⏳ Перекладаю...</div>
+              <span style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;">← назад</span>
+              <div class="dict-word" id="uk-word-text" style="margin:8px 0 4px">⏳</div>
+              <div id="uk-meanings-block">
+                <div class="dict-meaning">
+                  <div class="dict-pos">Переклад</div>
+                  <div class="dict-def" id="uk-def-text">⏳ Перекладаю...</div>
+                </div>
               </div>
             </div>
           </div>
@@ -1913,11 +1921,44 @@ async function lookupWord() {
     flipCard.addEventListener('click', async () => {
       if(!translated) {
         translated = true;
-        const ukText = await translateToUk(allDefs, word);
-        const defEl = document.getElementById('uk-def-text');
-        if(defEl) defEl.textContent = ukText || 'Не вдалося перекласти. Перевір інтернет-зʼєднання.';
-        // Recalculate height after translation
 
+        // Translate the word itself
+        const wordEl = document.getElementById('uk-word-text');
+        translateToUk(entry.word, entry.word + '_word').then(t => {
+          if(wordEl) wordEl.textContent = t || entry.word;
+        });
+
+        // Translate each meaning preserving structure
+        const block = document.getElementById('uk-meanings-block');
+        if(!block) return;
+        block.innerHTML = '';
+        for(const m of entry.meanings.slice(0,3)) {
+          const div = document.createElement('div');
+          div.className = 'dict-meaning';
+          const posDiv = document.createElement('div');
+          posDiv.className = 'dict-pos';
+          posDiv.textContent = m.partOfSpeech;
+          div.appendChild(posDiv);
+          for(const d of m.definitions.slice(0,2)) {
+            const defDiv = document.createElement('div');
+            defDiv.className = 'dict-def';
+            defDiv.textContent = '⏳';
+            div.appendChild(defDiv);
+            translateToUk(d.definition, entry.word + Math.random()).then(t => {
+              if(t) defDiv.textContent = '• ' + t;
+            });
+            if(d.example) {
+              const exDiv = document.createElement('div');
+              exDiv.className = 'dict-ex';
+              exDiv.textContent = '⏳';
+              div.appendChild(exDiv);
+              translateToUk(d.example, entry.word + '_ex' + Math.random()).then(t => {
+                if(t) exDiv.textContent = '"' + t + '"';
+              });
+            }
+          }
+          block.appendChild(div);
+        }
       }
     });
 
