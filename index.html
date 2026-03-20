@@ -1749,29 +1749,7 @@ async function translateViaMyMemory(text) {
 
 async function translateToUk(text, word) {
   if(ukTranslations[word]) return ukTranslations[word];
-
-  let result = null;
-
-  // Try Gemini first if key is available
-  if(apiKey) {
-    try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-        { method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ contents:[{role:'user',parts:[{text:`Translate this English dictionary definition to Ukrainian in 1-2 sentences. Return ONLY the Ukrainian translation, nothing else:\n"${text}"`}]}] }) }
-      );
-      const data = await res.json();
-      if(data.candidates && data.candidates[0]) {
-        result = data.candidates[0].content.parts[0].text.trim();
-      }
-    } catch(e) {}
-  }
-
-  // Fallback to MyMemory if Gemini failed or no key
-  if(!result) {
-    result = await translateViaMyMemory(text);
-  }
-
+  const result = await translateViaMyMemory(text);
   if(result) ukTranslations[word] = result;
   return result;
 }
